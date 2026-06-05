@@ -1,4 +1,35 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+  emailjs.init("p1vh803Qs2xKDxqrF");
+
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      
+      emailjs.send(
+        "service_rb9xmpd",
+        "template_s6ci14z",
+        {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          subject: document.getElementById("subject").value,
+          message: document.getElementById("message").value
+        }
+      ).then(
+        function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          alert('Message sent successfully!');
+          contactForm.reset();
+        },
+        function(error) {
+          console.log('FAILED...', error);
+          alert('Failed to send message. Please try again.');
+        }
+      );
+    });
+  }
+
   const downloadLink = document.getElementById('download-cv-link');
   if (!downloadLink) return;
 
