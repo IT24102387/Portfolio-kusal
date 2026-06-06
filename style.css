@@ -428,14 +428,83 @@ button:nth-child(1):hover {
 
 .projects-container h2 span { color: #5DB9EE; }
 
+.projects-carousel { position: relative; }
+
+/* responsive slides per view */
+:root { --proj-gap: 2rem; }
 .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  --slides-per-view: 3;
+  display: flex;
+  gap: var(--proj-gap);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-@media (max-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px)  { .projects-grid { grid-template-columns: 1fr; } }
+.projects-grid::-webkit-scrollbar { display: none; }
+
+/* slide width computed by JS; set sensible defaults with CSS so layout doesn't jump */
+.projects-grid .project-card {
+  flex: 0 0 calc((100% - (var(--proj-gap) * (var(--slides-per-view) - 1))) / var(--slides-per-view));
+}
+
+@media (max-width: 1024px) {
+  .projects-grid { --slides-per-view: 2; --proj-gap: 1.5rem; }
+}
+
+@media (max-width: 640px) {
+  .projects-grid { --slides-per-view: 1; --proj-gap: 1rem; }
+}
+
+.proj-nav {
+  background: linear-gradient(135deg, #5DB9EE, #3877FF);
+  color: #fff;
+  border: 2px solid transparent;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(93, 185, 238, 0.3);
+}
+
+.proj-nav[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #555, #333);
+  box-shadow: none;
+}
+
+.proj-nav:hover:not([disabled]) {
+  background: linear-gradient(135deg, #6ec9ff, #4a88ff);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(93, 185, 238, 0.5);
+}
+
+.proj-nav:active:not([disabled]) {
+  transform: scale(0.96);
+  box-shadow: 0 2px 8px rgba(93, 185, 238, 0.4);
+}
+
+.proj-nav:focus-visible {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(93, 185, 238, 0.4), 0 4px 12px rgba(93, 185, 238, 0.3);
+}
+
+.projects-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
 
 .project-card {
   background: #262525;
@@ -811,7 +880,7 @@ button:nth-child(1):hover {
 .contact-section {
   width: 100%;
   min-height: 100vh;
-  background: #141414;
+  background: #2a2929;
   padding: 6rem 3rem;
   display: flex;
   justify-content: center;

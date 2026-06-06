@@ -88,4 +88,67 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // Projects carousel: show multiple projects per view with prev/next buttons
+  const projectsGrid = document.querySelector('.projects-grid');
+  const prevBtn = document.querySelector('.proj-prev');
+  const nextBtn = document.querySelector('.proj-next');
+
+  if (projectsGrid && prevBtn && nextBtn) {
+    const slides = Array.from(projectsGrid.querySelectorAll('.project-card'));
+    let current = 0;
+    let slidesPerView = 3;
+
+    // use scrolling for alignment instead of CSS transform
+
+    function getSlidesPerView() {
+      if (window.matchMedia('(max-width: 640px)').matches) return 1;
+      if (window.matchMedia('(max-width: 1024px)').matches) return 2;
+      return 3;
+    }
+
+    function updateButtons(maxIndex) {
+      prevBtn.disabled = current <= 0;
+      nextBtn.disabled = current >= maxIndex;
+    }
+
+    function updateCarousel() {
+      slidesPerView = getSlidesPerView();
+      const maxIndex = Math.max(0, slides.length - slidesPerView);
+      // clamp current
+      current = Math.min(Math.max(0, current), maxIndex);
+
+      const target = slides[current];
+      if (target) {
+        projectsGrid.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+      }
+      updateButtons(maxIndex);
+    }
+
+    prevBtn.addEventListener('click', function () {
+      current = Math.max(0, current - 1);
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', function () {
+      const maxIndex = Math.max(0, slides.length - slidesPerView);
+      current = Math.min(maxIndex, current + 1);
+      updateCarousel();
+    });
+
+    // keyboard navigation
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    });
+
+    // update on resize (recalculate slidesPerView and clamp)
+    window.addEventListener('resize', function () {
+      // use rAF to avoid jank
+      window.requestAnimationFrame(updateCarousel);
+    });
+
+    // initialize
+    updateCarousel();
+  }
 });
